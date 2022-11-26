@@ -67,7 +67,7 @@ for (i in 1:sim_steps) {
   if (total_cells>1e6 && params$txon==FALSE){starttx=i
   params$txon=TRUE}
   
-  if ((total_cells>1e6 && params$txon==TRUE && i>starttx)||total_cells<10){plotstop=i
+  if ((total_cells>1e6 && params$txon==TRUE && i>starttx+3)||total_cells<10){plotstop=i
   break} #cancer progression
   
   if ((total_cells>popsize[i-1] && params$txon==TRUE && i>starttx+2||total_cells<10)){plotstop=i
