@@ -6,9 +6,9 @@ params = data.frame(
 
 varG = .05
 varF = .05
-lexp = 1.5 #1.5
+lexp = 1.5
 beta = 1.5 
-evolv = 1 #1,4
+evolv = 1
 natd = .01*evolv
 bex = -.6
 
@@ -47,11 +47,8 @@ for (i in 1:sim_steps) {
   avgcell = sum(avgtemp)
   avgplot[i] = avgcell
   
-  # if (total_cells>1e6 && params$txon==FALSE){starttx=i
-  # params$txon=TRUE} #starting tx
-  
   if (i>=48 && total_cells>thrh && params$txon==FALSE){starttx=i
-  params$txon=TRUE} #starting tx: play around with the threshold!
+  params$txon=TRUE} #starting tx
   
   if ((params$txon==TRUE && total_cells<thrl)){params$txon=FALSE} #tx period
   
@@ -65,7 +62,7 @@ for (i in 1:sim_steps) {
   
   l.x = function(x, params) {exp(lexp*x)}
   
-  b.x = function(x, params) {.3*exp(bex*x)} #.4,.5
+  b.x = function(x, params) {.3*exp(bex*x)}
   
   s.x = function(x, params) {
     return(1-natd-m/(l.x(x,params=params)+beta*v))}
@@ -93,7 +90,7 @@ for (i in 1:sim_steps) {
     P[, j] = G[, j] * S[j]
   }
   
-  #ADRN Eviction
+  #Low state eviction
   for (j in 1:(n / 2)) {
     F[1, j] <- F[1, j] + 1 - sum(F[, j])
     Q[, j] <- F[, j] * B[j]
@@ -101,7 +98,7 @@ for (i in 1:sim_steps) {
     P[, j] <- G[, j] * S[j]
   }
   
-  #MES Eviction
+  #High state eviction
   for (j in (n / 2 + 1):n) {
     F[n, j] <- F[n, j] + 1 - sum(F[, j])
     Q[, j] <- F[, j] * B[j]
@@ -123,18 +120,9 @@ for (i in 1:sim_steps) {
   
   sensv <- sum(sens*(dkds * dsdv)) * h ^ 2
   v <- v + evolv * sum(sensv) / lam
-  
-  # jpeg(file = paste("/Users/an7531bu/Downloads/",i))
-  # plot(y,Nt,xlab = "State",ylab = "Population Density",type = 'l',main = paste("State distribution: Time ", i),family='serif')
-  # dev.off()
 }
 
-#message('Drug Resistance Level:',v)
-#message('Nadir of Population:',min(popsize[-c(1:starttx,plotstop+1:params$endtx)]))
-message('Time to Progression:',plotstop-48)
-message('Time to Failure:',ti-48)
-
-par(mfrow = c(1, 3))#,oma=c(1,0,2,0))
+par(mfrow = c(1, 3))
 plot(avgplot[-c(plotstop+1:params$endtx)],xlab = "Time Steps",ylab='Cell State',type = 'l',main = 'Average Cell State over Time',family='serif')
 plot(popsize[-c(plotstop+1:params$endtx)],xlab = "Time Steps",ylab = 'Population Size',main = 'Population Size over Time',type = 'l',family='serif')
 abline(h=thrh,col='red',lty=3)
