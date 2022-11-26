@@ -100,7 +100,7 @@ for (i in 1:sim_steps) {
     P[, j] = G[, j] * S[j]
   }
   
-  #ADRN Eviction
+  #Low state eviction
   for (j in 1:(n / 2)) {
     F[1, j] <- F[1, j] + 1 - sum(F[, j])
     Q[, j] <- F[, j] * B[j]
@@ -108,7 +108,7 @@ for (i in 1:sim_steps) {
     P[, j] <- G[, j] * S[j]
   }
   
-  #MES Eviction
+  #High state eviction
   for (j in (n / 2 + 1):n) {
     F[n, j] <- F[n, j] + 1 - sum(F[, j])
     Q[, j] <- F[, j] * B[j]
@@ -121,31 +121,15 @@ for (i in 1:sim_steps) {
   Nt = Nt1
   
   lam <- abs(eigen(K)$values[1])
-  #damp = abs(eigen(K)$values[1])/abs(eigen(K)$values[2]) # damping ratio
   w.eigen <- abs(eigen(K)$vectors[, 1])
   stable.dist <- w.eigen/sum(w.eigen)
   v.eigen <- abs(eigen(t(K))$vectors[, 1])
   repro.val <- v.eigen/v.eigen[1]
   v.dot.w = sum(stable.dist * repro.val) * h
   sens = outer(repro.val, stable.dist)/v.dot.w
-  #elas = matrix(as.vector(sens) * as.vector(K)/lam, nrow = n)
   
   sensv <- sum(sens*(dkds * dsdv)) * h ^ 2
   v <- v + sum(avgevolv) * sum(sensv) / lam
-  
-  #print(sum(avgevolv))
-  
-  #print(c(sum(sens*(conts)),i))
-  #print(c(sum(sens),i))
-  #print(c(sum(conts),i))
-  
-  #print(c(sum(Nt),i))
-  #print(c(avgcell,i))
-  #print(c(lam,i))
-  
-  # jpeg(file = paste("/Users/an7531bu/Downloads/",i))
-  # plot(y,Nt,xlab = "State",ylab = "Population Density",type = 'l',main = paste("State distribution: Time ", i),family='serif')
-  # dev.off()
 }
 
 message('Drug Resistance Level:',v)
@@ -160,18 +144,3 @@ plot(popsize[-c(plotstop+1:params$endtx)],xlab = "Time Steps",ylab = 'Population
 abline(h=1e6,col='red',lty=3)
 plot(evoldyn[-c(plotstop+1:params$endtx)],xlab = "Time Steps",ylab = 'Trait Value',main = 'Drug Resistance over Time',type = 'l',family='serif')
 plot(avgplot2[-c(plotstop+1:params$endtx)],xlab = "Time Steps",ylab='Evolvability',type = 'l',main = 'Average Evolvability over Time',family='serif')
-
-# par(mfrow = c(1,2))
-# plot(y,s.x(y,params),ylim=c(0.6,1),xlab="State",type="l",ylab="Survival Probability",lwd=12,main = 'Survival w/Correction: Pre-Tx',family='serif') #
-# points(y,apply(P,2,sum),col="brown1",lwd=3,cex=.1,pch=19)
-# plot(y,b.x(y,params),xlab="State",type="l",ylab="Birth Probability",lwd=12,main = 'Birth w/Correction: Pre-Tx',family='serif')
-# points(y,apply(Q,2,sum),col="cyan",lwd=3,cex=.1,pch=19)
-
-# plot(y,Nt,xlab="State",ylab='Pop Density',type='l',main='Population Distribution',family='serif')
-# image(y,y,t(elas),xlab = "State (t)",ylab = "State (t+1)",main = "Elasticity",family='serif')
-# image(y,y,t(sens),xlab = "State (t)",ylab = "State (t+1)",main = "Sensitivity",family='serif')
-#mtext("Low Evolvability", line=0, side=3, outer=TRUE, cex=1.5,family='serif')
-#plot(y,stable.dist,xlab = "State",type = "l",main = "Stable state distribution",family='serif')
-#plot(y,repro.val,xlab="State",type="l",main="Reproductive values",family='serif')
-#image(y,y,t(K), xlab="State (t)",ylab="State (t+1)",col=topo.colors(100), main="IPM matrix",family='serif')
-#contour(y,y,t(K), add = TRUE, drawlabels = TRUE)
