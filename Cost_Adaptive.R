@@ -51,14 +51,12 @@ for (i in 1:sim_steps) {
   avgplot[i] = avgcell
    
   if (i>=48 && total_cells>thrh && params$txon==FALSE){starttx=i
-  params$txon=TRUE} #starting tx: play around with the threshold!
+  params$txon=TRUE} 
   
-  if ((params$txon==TRUE && total_cells<thrl)){params$txon=FALSE} #tx period
-  
-  if ((total_cells>popsize[i-1] && params$txon==TRUE && ti==0 && i>starttx||total_cells<10)){ti = i} #treatment failure
+  if ((params$txon==TRUE && total_cells<thrl)){params$txon=FALSE} 
   
   if ((total_cells>1e6 && params$txon==TRUE && i>starttx+5||total_cells<10)){plotstop=i
-  break} #time to progression
+  break}
   
   if (params$txon==TRUE) {m=dose}
   else {m=0}
