@@ -13,8 +13,8 @@ natd = .01*evolv
 bex = -.6
 
 vpar1 = .01 
-vpar2 = .2
-vpar3 = .5
+vpar2 = .15
+vpar3 = .3
 plotstop = 0
 starttx=0
 stressG = TRUE
