@@ -14,7 +14,6 @@ bex = -.6
 
 vpar1 = .01
 vpar2 = .3
-vpar3 = .4
 plotstop = 0
 starttx=0
 min = 0
